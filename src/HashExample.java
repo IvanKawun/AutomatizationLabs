@@ -6,7 +6,8 @@ import java.util.HashMap;
 
 public class HashExample {
     public static void main(String[] args) {
-        String input = "Hello, World!";
+        // First task test
+        String input = "This is the teats of the first task";
         String md5Hash = generateHash("MD5", input);
         System.out.println("MD5 Hash: " + md5Hash);
 
@@ -17,8 +18,8 @@ public class HashExample {
         System.out.println("SHA-256 Hash: " + sha256Hash);
 
 
-
-        String seedString = "ConsistentSeed";
+        // Second task test
+        String seedString = "PimPamPom";
         byte[] randomData = generateSeededRandomBytes(seedString, 16);
 
         String hashMD5 = generateHash("MD5", randomData);
@@ -53,10 +54,10 @@ public class HashExample {
         correctMap.put(student3, "Data for Bob");
 
         incorrectMap.put(incorrectStudent1, "Data for Alice");
-        incorrectMap.put(incorrectStudent2, "Data for Andrew"); //Некоректно обробляється
+        incorrectMap.put(incorrectStudent2, "Data for Andrew"); //Incorrect initialization
         incorrectMap.put(incorrectStudent3, "Data for Bob");
 
-        // Виведення результатів
+        // Results printing
         System.out.println("StudentCorrect HashMap:");
         for (StudentCorrect key : correctMap.keySet()) {
             System.out.println(key + " -> " + correctMap.get(key));
@@ -75,6 +76,7 @@ public class HashExample {
         randomGenerator.nextBytes(randomData);
         return randomData;
     }
+    // Generating hash for strings
     private static String generateHash(String algorithm, String input) {
         return generateHash(algorithm, input.getBytes());
     }
