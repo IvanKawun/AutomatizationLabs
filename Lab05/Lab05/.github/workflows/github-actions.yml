@@ -1,0 +1,57 @@
+name: CI/CD Pipeline
+on:
+  push:
+    branches:
+      - master
+jobs:
+  check-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x ./gradlew
+
+      - name: Analyze code with Checkstyle
+        run: ./gradlew check
+
+      - name: Build with Gradle
+        run: ./gradlew clean build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: lab05-jar
+          path: build/libs/*.jar
+
+  deploy-to-dockerhub:
+    runs-on: ubuntu-latest
+    needs: check-and-build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t practice5:latest .
+          docker tag practice5:latest ${{ secrets.DOCKER_USERNAME }}/practice5:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/practice5:latest
